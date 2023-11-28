@@ -1,7 +1,7 @@
 import React from 'react';
 import PostList from '../../components/PostList/PostList';
 
-const Home = () => {
+const Home = ({ username }) => {
   return (
     <div className="home">
       <h2>Welcome to the 10up Blog</h2>

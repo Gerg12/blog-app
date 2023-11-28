@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 function Login({ handleLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+	const [loginError, setLoginError] = useState(false)
 
 
   const handleSubmit = async (e) => {
@@ -10,17 +11,21 @@ function Login({ handleLogin }) {
     try {
       // Call the handleLogin function passed from the parent component
       await handleLogin(username, password);
+			console.log('after login handler');
     } catch (error) {
       console.error('Login error:', error);
+			setLoginError(true);
     }
   };
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
+		setLoginError(false);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+		setLoginError(false);
   };
 
   return (
