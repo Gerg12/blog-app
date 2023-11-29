@@ -36,7 +36,7 @@ const PostList = () => {
             throw new Error(`Failed to fetch author with ID ${authorId}`);
           }
           const authorData = await response.json();
-          authorNamesObj[authorId] = authorData.name; // Assuming 'name' field contains the author's name
+          authorNamesObj[authorId] = authorData.name;
         } catch (error) {
           console.error('Error fetching author details:', error);
           authorNamesObj[authorId] = 'Unknown Author';

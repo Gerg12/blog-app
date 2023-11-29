@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import About from './pages/About/About';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
@@ -39,7 +39,6 @@ function App() {
       });
 
       if (response.ok) {
-				console.log('Everything is ok');
         const data = await response.json();
         const token = data.token; // Assuming the token is received in the response
 
@@ -78,15 +77,11 @@ function App() {
   const handleTokenExpiration = () => {
     const storedToken = localStorage.getItem('token');
     if (storedToken && !validateToken(storedToken)) {
-      // Token is expired, handle logic here (e.g., token refresh or logout)
-      console.log('Token expired. Implement logic here.');
       setIsLoggedIn(false);
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('username');
       setUsername('');
-    } else {
-			console.log('Token is good.');
-		}
+    }
   };
 
 	const handleLogout = () => {
