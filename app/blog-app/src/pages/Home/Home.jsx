@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PostList from '../../components/PostList/PostList';
+import WelcomeMessage from '../../components/WelcomeMessage/WelcomeMessage';
 
-const Home = ({ username }) => {
+const Home = () => {
+
+	const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+  }, []);
+
   return (
     <div className="home">
-      <h2>Welcome to the 10up Blog</h2>
-      <p>
-        This is the landing page content. You can customize this area to display any introductory
-        information about your blog.
-      </p>
+      {username && <WelcomeMessage username={username} />}
 			<PostList />
     </div>
   );
