@@ -4,7 +4,7 @@ import About from './pages/About/About';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Header from './components/Header/Header';
-import * as jwtDecode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import './App.css';
 
 function App() {
