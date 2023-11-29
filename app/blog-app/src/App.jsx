@@ -83,6 +83,7 @@ function App() {
     setIsLoggedIn(false);
     localStorage.removeItem('isLoggedIn');
 		localStorage.removeItem('username');
+		setUsername('');
   };
 
 
@@ -113,11 +114,11 @@ function App() {
             </ul>
           </nav>
         </header>
-				{isLoggedIn && (
-          <section className="welcome logged-in">
-            Welcome, {username}!
-          </section>
-        )}
+				{username && (
+					<section className="welcome logged-in">
+						Welcome, {username}!
+					</section>
+				)}
 
         <Routes>
 					<Route

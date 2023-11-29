@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Login.css';
 
 function Login({ handleLogin }) {
   const [username, setUsername] = useState('');
@@ -10,7 +11,12 @@ function Login({ handleLogin }) {
     e.preventDefault();
     try {
       // Call the handleLogin function passed from the parent component
-      await handleLogin(username, password);
+      const loginSuccess = await handleLogin(username, password);
+      if (loginSuccess) {
+        // If login is successful, update local storage
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('username', username);
+      }
 			console.log('after login handler');
     } catch (error) {
       console.error('Login error:', error);

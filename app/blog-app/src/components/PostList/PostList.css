@@ -1,0 +1,13 @@
+.post {
+	margin-bottom: 2em;
+}
+
+.post .author,
+.post .date {
+	display: inline-block;
+	margin-right: .5em;
+}
+
+.post .content {
+	margin-top: 1em;
+}
