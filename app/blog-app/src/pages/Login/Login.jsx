@@ -4,8 +4,7 @@ import './Login.css';
 function Login({ handleLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-	const [loginError, setLoginError] = useState(false)
-
+  const [loginError, setLoginError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,22 +15,23 @@ function Login({ handleLogin }) {
         // If login is successful, update local storage
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('username', username);
-      }
-			console.log('after login handler');
+      } else {
+				setLoginError(true);
+			}
     } catch (error) {
       console.error('Login error:', error);
-			setLoginError(true);
+      setLoginError(true);
     }
   };
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
-		setLoginError(false);
+    setLoginError(false);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-		setLoginError(false);
+    setLoginError(false);
   };
 
   return (
@@ -39,6 +39,7 @@ function Login({ handleLogin }) {
       <h1>Login</h1>
       <div className="login">
         <form onSubmit={handleSubmit}>
+					{loginError && <p className="error-message">Authentication Failed</p>}
           <div>
             <label htmlFor="username">Username</label>
             <input
