@@ -17,7 +17,7 @@ function App() {
 				<Header isLoggedIn={isLoggedIn} handleLogout={handleLogout} username={username} />
 
 				{/* Button to invalidate the token */}
-        <button onClick={invalidateToken}>Invalidate Token</button>
+        {/* <button onClick={invalidateToken}>Invalidate Token</button> */}
 
         <Routes>
 					<Route
