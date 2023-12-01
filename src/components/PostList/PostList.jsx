@@ -1,51 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import './PostList.css';
+import { fetchPosts, fetchAuthors } from '../../utils/api';
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [authorNames, setAuthorNames] = useState({});
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch('https://js1.10up.com/wp-json/wp/v2/posts');
-      if (!response.ok) {
-        throw new Error('Failed to fetch posts');
-      }
-      const data = await response.json();
-      setPosts(data);
-      fetchAuthors(data); // Fetch author names after posts are fetched
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
-  };
-
-  const fetchAuthors = async (postsData) => {
-    const authorIds = postsData.map((post) => post.author);
-    const uniqueAuthorIds = [...new Set(authorIds)]; // Get unique author IDs
-    const authorNamesObj = {};
-
-    await Promise.all(
-      uniqueAuthorIds.map(async (authorId) => {
-        try {
-          const response = await fetch(`https://js1.10up.com/wp-json/wp/v2/users/${authorId}`);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch author with ID ${authorId}`);
-          }
-          const authorData = await response.json();
-          authorNamesObj[authorId] = authorData.name;
-        } catch (error) {
-          console.error('Error fetching author details:', error);
-          authorNamesObj[authorId] = 'Unknown Author';
-        }
+    fetchPosts()
+      .then(data => {
+        setPosts(data);
+        return fetchAuthors(data);
       })
-    );
-
-    setAuthorNames(authorNamesObj);
-  };
+      .then(authorNamesData => {
+        setAuthorNames(authorNamesData);
+      });
+  }, []);
 
   return (
     <div>
