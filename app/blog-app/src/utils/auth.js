@@ -1,49 +1,57 @@
 import { useState, useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 export const useAuth = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem('isLoggedIn') === 'true'
-  );
-  const [username, setUsername] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+
+  const isLoggedIn = !!token; // Check if token exists to determine login status
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
     handleTokenExpiration();
   }, []);
 
-  // Function to perform login
+  const setLocalStorageData = (receivedToken, receivedUsername) => {
+    setToken(receivedToken);
+    setUsername(receivedUsername);
+    localStorage.setItem('token', receivedToken);
+    localStorage.setItem('username', receivedUsername);
+  };
+
+  const cleanupLocalStorage = () => {
+    setToken('');
+    setUsername('');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+  };
+
   const handleLogin = async (username, password) => {
     try {
-      const response = await fetch('https://js1.10up.com/wp-json/jwt-auth/v1/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        'https://js1.10up.com/wp-json/jwt-auth/v1/token',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        const token = data.token; // Assuming the token is received in the response
+        const receivedToken = data.token;
 
-        // Validate the token
-        const isValidToken = await validateToken(token);
+        // Validate the received token
+        const isValidToken = await validateToken(receivedToken);
         if (isValidToken) {
-          setIsLoggedIn(true); // Set logged in status to true if the token is valid
-          localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('username', username);
-          setUsername(username);
+          setLocalStorageData(receivedToken, username);
         }
       } else {
         // Handle login error
-        setIsLoggedIn(false);
         console.error('Login failed');
       }
     } catch (error) {
@@ -51,7 +59,6 @@ export const useAuth = () => {
     }
   };
 
-  // Function to validate token
   const validateToken = (token) => {
     try {
       const decoded = jwtDecode(token);
@@ -64,32 +71,19 @@ export const useAuth = () => {
     }
   };
 
-  // Function to handle token expiration
   const handleTokenExpiration = () => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken && !validateToken(storedToken)) {
-      setIsLoggedIn(false);
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('username');
-      setUsername('');
+    if (token && !validateToken(token)) {
+      cleanupLocalStorage();
     }
   };
 
-  // Function to invalidate the token
   const invalidateToken = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('username');
-    localStorage.removeItem('token'); // Remove or set token to an expired state
-    setUsername('');
+    cleanupLocalStorage();
     console.log('Token invalidated.');
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('username');
-    setUsername('');
+    cleanupLocalStorage();
   };
 
   return {
